@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title>Events</title>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application' %>
+  </head>
+</html>
+<body>
+  <div class="container">
+    <%= react_component('EventsApp', { events: []}) %>
+  </div>
+</body>

@@ -1,3 +1,12 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  root 'static#index'
+  namespace :v1 do
+    resources :events, only: [:index, :show] do
+      post :sign_up, on: :collection
+    end
+    namespace :admin do
+      resources :events
+      resources :locations
+    end
+  end
 end
