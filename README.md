@@ -3,8 +3,11 @@ Assumes you have yarn installed (`brew install yarn`)
 
 `bundle install`
 
-`rake db:migrate`
+`rake db:migrate db:seed`
 
+`yarn install`
+
+`rails s`
 
 # README
 

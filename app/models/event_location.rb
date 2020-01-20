@@ -5,6 +5,6 @@ class EventLocation < ApplicationRecord
   validates_presence_of :state, if: Proc.new {|r| r.country == "USA" }
 
   def full_address
-    [self.address, self.state, self.postal_code, self.country].reject(&:nil).join(', ')
+    [self.address, self.state, self.postal_code, self.country].reject(&:blank?).join(', ')
   end
 end

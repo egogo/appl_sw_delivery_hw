@@ -1,18 +1,19 @@
-import {createStore} from "redux";
+import {createStore, applyMiddleware} from "redux";
+import thunk from "redux-thunk";
+import rootReducer from "./reducers";
 
 const initialState = {
-    events: []
+    events: {
+        items: [],
+        page: 1,
+        per_page: 10,
+        total: 0
+    }
 };
 
-function rootReducer(state, action) {
-    console.log(action);
-    switch (action.type) {
-        default:
-            return state
-    }
-}
+const middleware = [thunk];
 
 export default function configureStore() {
-    const store = createStore(rootReducer, initialState);
+    const store = createStore(rootReducer, initialState, applyMiddleware(...middleware));
     return store;
 }
