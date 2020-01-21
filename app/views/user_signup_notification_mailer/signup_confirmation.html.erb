@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>You've signed up for an event "<%= @event.name -%>"!</h1>
+<p>
+    It will happen on <%= @event.starts -%> at <%= @event.location.full_address -%>
+</p>
+<p>
+    If you decide not to attend - here's the link to cancel your reservation: <%= @reservation_cancelation_url -%>
+</p>
+</body>
+</html>

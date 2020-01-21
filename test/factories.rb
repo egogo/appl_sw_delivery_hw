@@ -1,6 +1,10 @@
 require 'faker'
 
 FactoryBot.define do
+  factory :event_sign_up do
+    email { Faker::Internet.email }
+  end
+
   factory :location, class: EventLocation do
     name { Faker::TvShows::RickAndMorty.location }
     address { Faker::Address.street_address }

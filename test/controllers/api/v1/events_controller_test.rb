@@ -61,4 +61,51 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
          total: 3
      }
    end
+
+   test "/api/v1/events/:id" do
+     location = FactoryBot.create :location
+     event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
+     get "/api/v1/events/#{event.id}"
+     assert_equal 200, status
+     assert_equal JSON.parse(body, symbolize_names: true), {
+         id: event.id,
+         name: event.name,
+         description: event.description,
+         location: { name: location.name, address: location.full_address },
+         starts: event.starts.as_json,
+         ends: event.ends.as_json
+     }
+   end
+
+   test "/api/v1/events/:id/sign_up with invalid email" do
+     location = FactoryBot.create :location
+     event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
+     assert_no_enqueued_jobs
+     post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti'}
+     assert_equal 422, status
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, error: 'invalid_email'}
+     assert_no_enqueued_jobs
+   end
+
+   test "/api/v1/events/:id/sign_up with valid email" do
+     location = FactoryBot.create :location
+     event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
+     assert_no_enqueued_jobs
+     post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti@gmail.com'}
+     assert_equal 201, status
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: true, error: nil}
+     assert_enqueued_jobs 2
+   end
+
+   test "/api/v1/events/:id/sign_up with valid email when already signed up" do
+     location = FactoryBot.create :location
+     event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
+     assert_no_enqueued_jobs
+     EventSignUp.create(event: event, email: 'cacti@gmail.com')
+
+     post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti@gmail.com'}
+     assert_equal 422, status
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, error: 'already_signed_up'}
+     assert_no_enqueued_jobs
+   end
 end

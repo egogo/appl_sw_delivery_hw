@@ -1,7 +1,7 @@
 import { SIGNUP } from '../actions/types';
 
 const initialState = {
-    signup: {}
+    result: {}
 };
 
 export default function(state = initialState, action) {
@@ -9,7 +9,7 @@ export default function(state = initialState, action) {
         case SIGNUP:
             return {
                 ...state,
-                item: action.payload
+                result: action.payload
             };
         default:
             return state;

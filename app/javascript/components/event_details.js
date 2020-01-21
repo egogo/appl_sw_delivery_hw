@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {fetchEvent} from "./actions/events";
+import {fetchEvent} from "./../actions/events";
 import { formattedDates } from './../helpers'
+import SignupForm from "./signup_form";
 
 class EventDetails extends Component {
     componentDidMount() {
@@ -32,7 +33,7 @@ class EventDetails extends Component {
                     </blockquote>
                 </div>
                 <div className="card-footer">
-                    Sign up with email: <input type="text" />
+                    <SignupForm eventId={parseInt(event.id)} />
                 </div>
             </div>
         );

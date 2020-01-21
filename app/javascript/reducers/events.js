@@ -11,12 +11,15 @@ export default function(state = initialState, action) {
     switch (action.type) {
         case FETCH_EVENTS:
             return {
-                items: action.payload.events,
-                page: action.payload.page,
-                per_page: action.payload.per_page,
-                total: action.payload.total,
+                ...state,
+                ...{
+                    items: action.payload.events,
+                    page: action.payload.page,
+                    per_page: action.payload.per_page,
+                    total: action.payload.total
+                }
             };
         default:
-            return initialState;
+            return state;
     }
 }

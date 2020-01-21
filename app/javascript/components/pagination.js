@@ -32,7 +32,6 @@ class Pagination extends Component {
         const page = this.props.page;
         // TODO: better bounds
         if( num_pages > 5 ){
-            console.log(num_pages)
             if(page == 1) {
                 return [page, page + 1, page + 2, page + 3, page + 4];
             }else if(page == 2) {

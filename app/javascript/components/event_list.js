@@ -3,7 +3,7 @@ import Pagination from "./pagination";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {connect} from "react-redux";
-import {fetchEvents} from "./actions/events";
+import {fetchEvents} from "./../actions/events";
 import { formattedDates } from './../helpers'
 
 class EventList extends Component {
