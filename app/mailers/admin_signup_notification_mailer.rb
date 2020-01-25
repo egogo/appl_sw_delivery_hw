@@ -1,6 +1,4 @@
 class AdminSignupNotificationMailer < ApplicationMailer
-  default from: 'testtask@example.com'
-
   def signup_notification
     @event = params[:event]
     @user_email = params[:user_email]

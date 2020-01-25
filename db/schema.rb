@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(version: 2020_01_21_002012) do
   create_table "event_locations", force: :cascade do |t|
     t.string "name"
     t.string "address"
+    t.string "city"
     t.string "state"
     t.string "postal_code"
     t.string "country"

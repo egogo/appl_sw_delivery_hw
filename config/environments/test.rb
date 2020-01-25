@@ -47,4 +47,7 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   config.active_job.queue_adapter = :inline
   config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.signup_notification_email = "admin@email.com"
+  config.admin_api_token = "TEST_ADMIN_API_KEY"
 end

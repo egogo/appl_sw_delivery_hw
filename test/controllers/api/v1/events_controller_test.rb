@@ -83,7 +83,7 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
      assert_no_enqueued_jobs
      post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti'}
      assert_equal 422, status
-     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, error: 'invalid_email'}
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, errors: {email: ["is invalid"]}}
      assert_no_enqueued_jobs
    end
 
@@ -92,8 +92,8 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
      event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
      assert_no_enqueued_jobs
      post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti@gmail.com'}
-     assert_equal 201, status
-     assert_equal JSON.parse(body, symbolize_names: true), {ok: true, error: nil}
+     assert_equal 200, status
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: true, errors: nil}
      assert_enqueued_jobs 2
    end
 
@@ -101,11 +101,11 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
      location = FactoryBot.create :location
      event = FactoryBot.create(:event, starts: 3.days.from_now, ends: 3.days.from_now, location: location)
      assert_no_enqueued_jobs
-     EventSignUp.create(event: event, email: 'cacti@gmail.com')
+     EventSignUp.create(event: event, email: 'cacti@gmail.com', skip_notifications: true)
 
      post "/api/v1/events/#{event.id}/sign_up", params: {email: 'cacti@gmail.com'}
      assert_equal 422, status
-     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, error: 'already_signed_up'}
+     assert_equal JSON.parse(body, symbolize_names: true), {ok: false, errors: {email: ["has already been taken"]}}
      assert_no_enqueued_jobs
    end
 end

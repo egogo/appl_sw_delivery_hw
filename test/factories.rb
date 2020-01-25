@@ -8,6 +8,7 @@ FactoryBot.define do
   factory :location, class: EventLocation do
     name { Faker::TvShows::RickAndMorty.location }
     address { Faker::Address.street_address }
+    city { Faker::Address.city }
     state { Faker::Address.state_abbr }
     postal_code { Faker::Address.postcode }
     country { Faker::Address.country }

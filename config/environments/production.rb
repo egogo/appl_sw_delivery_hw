@@ -112,4 +112,5 @@ Rails.application.configure do
       openssl_verify_mode: 'none',
       tls: true
   }
+  config.admin_api_token = "ADMIN_API_KEY"
 end

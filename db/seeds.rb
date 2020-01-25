@@ -6,6 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+locations = 20.times.map { FactoryBot.create(:location) }
 1_000.times do
-  FactoryBot.create :event, location: FactoryBot.create(:location)
+  FactoryBot.create :event, location: locations.sample
 end

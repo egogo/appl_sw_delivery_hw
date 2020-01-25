@@ -1,4 +1,6 @@
 ## How to run:
+Setup:
+
 Assumes you have yarn installed (`brew install yarn`)
 
 `bundle install`
@@ -6,8 +8,6 @@ Assumes you have yarn installed (`brew install yarn`)
 `rake db:migrate db:seed`
 
 `yarn install`
-
-`rails s`
 
 Change config values in `config/development.rb` and `config/production.rb`:
 
@@ -22,10 +22,14 @@ Change config values in `config/development.rb` and `config/production.rb`:
       openssl_verify_mode: 'none',
       tls: true
   }
+  config.admin_api_token = "ADMIN_API_KEY"
 ```
 
-
-`open "http://localhost:3000"`
-
-
 Run tests: `rake test`
+
+Run the app: `rails s`
+
+
+`open http://localhost:3000` - consumer user app
+
+`open http://localhost:3000/admin` - admin app (login/pass: admin/secret)

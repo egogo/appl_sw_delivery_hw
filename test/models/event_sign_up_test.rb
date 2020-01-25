@@ -2,6 +2,8 @@ require 'test_helper'
 require 'base64'
 
 class EventSignUpTest < ActiveSupport::TestCase
+   include ActiveJob::TestHelper
+
    test "has event association" do
      event = FactoryBot.build :event
      signup = FactoryBot.build :event_sign_up, event: event
@@ -67,5 +69,47 @@ class EventSignUpTest < ActiveSupport::TestCase
 
    test '.find_by_code returns nil for random string' do
      assert_nil EventSignUp.find_by_code("cacti")
+   end
+
+   test '#create with valid email and not signed up' do
+     location = FactoryBot.create :location
+     event = FactoryBot.create :event, location: location
+     assert_equal EventSignUp.count, 0
+
+     assert_enqueued_jobs 2, only: [ActionMailer::MailDeliveryJob] do
+       EventSignUp.create(email: 'cacti@gmail.com', event: event)
+     end
+
+     assert_equal enqueued_jobs.map {|j| j[:args][0..1] }, [
+         ["AdminSignupNotificationMailer", "signup_notification"],
+         ["UserSignupNotificationMailer", "signup_confirmation"]
+     ]
+
+     assert_equal EventSignUp.count, 1
+   end
+
+   test '#create with valid email and already signed up' do
+     location = FactoryBot.create :location
+     event = FactoryBot.create :event, location: location
+     FactoryBot.create :event_sign_up, email: 'cacti@gmail.com', event: event, skip_notifications: true
+     assert_equal EventSignUp.count, 1
+
+     assert_enqueued_jobs 0 do
+       EventSignUp.create(email: 'cacti@gmail.com', event: event)
+     end
+
+     assert_equal EventSignUp.count, 1
+   end
+
+   test '#sign_up_email! with invalid email' do
+     location = FactoryBot.create :location
+     event = FactoryBot.create :event, location: location
+     assert_equal EventSignUp.count, 0
+
+     assert_enqueued_jobs 0 do
+       EventSignUp.create(email: 'cacti@g', event: event)
+     end
+
+     assert_equal EventSignUp.count, 0
    end
 end
