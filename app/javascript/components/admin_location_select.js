@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import {connect} from "react-redux";
 import {APIKeyContext} from "./api_key_context"
 import { fetchLocations } from "./../actions/admin_locations";
-import Creatable, { makeCreatableSelect } from 'react-select/creatable';
+import AdminLocatinEditor from "./admin_location_editor";
+import Select from 'react-select';
 
 class AdminLocationSelect extends Component {
     constructor(props) {
         super(props);
         this.state = {
             selectedOption: props.selectedOption,
-            isLoading: false,
+            isInEditorMode: false,
         }
     }
     componentDidMount() {
@@ -26,27 +27,24 @@ class AdminLocationSelect extends Component {
         this.props.onSelectChange(selectedOption)
     };
 
-    handleCreate = (inputValue) => {}
-    //     this.setState( { ...this.state, isLoading: true });
-    //     setTimeout(() => {
-    //         this.setState({
-    //                     ...this.state,
-    //                     isLoading: false
-    //         })
-    //         this.handleChange(inputValue);
-    //     }, 1000)
-        // setTimeout(() => {
-        //     const { options } = this.state;
-        //     const newOption = createOption(inputValue);
-        //     console.log(newOption);
-        //     console.groupEnd();
-        //     this.setState({
-        //         isLoading: false,
-        //         options: [...options, newOption],
-        //         value: newOption,
-        //     });
-        // }, 1000);
-    // };
+    optionCreated(newOption) {
+        this.setState({
+            ...this.state,
+            selectedOption: {
+                value: newOption.id,
+                label: newOption.name
+            }
+        })
+        this.toggleSelectVisibility()
+        this.props.fetchLocations(this.context.api_access_token)
+    }
+
+    editorIsVisible(val) {
+        this.setState({
+            ...this.state,
+            isInEditorMode: val
+        })
+    }
 
     render(){
         let selectedOption  = this.state.selectedOption;
@@ -62,12 +60,13 @@ class AdminLocationSelect extends Component {
         }
         return (
             <span>
-                <Creatable value={selectedOption}
-                           onCreateOption={this.handleCreate}
-                           onChange={this.handleChange}
-                           options={options}
-                           isLoading={this.state.isLoading}
-                />
+                <div hidden={this.state.isInEditorMode}>
+                    <Select value={selectedOption}
+                            onChange={this.handleChange}
+                            options={options}
+                    />
+                </div>
+                <AdminLocatinEditor editorIsVisible={(val)=>this.editorIsVisible(val)} optionCreated={(jsn) => this.optionCreated(jsn)} />
             </span>
         );
     }

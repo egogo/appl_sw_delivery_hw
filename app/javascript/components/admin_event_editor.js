@@ -42,16 +42,16 @@ class AdminEventEditor extends Component {
 
     handleEndsChange(value) {
         let newState = this.state
-        newState['ends'] = value
+        newState.ends = value
         this.setState(newState);
     }
 
     handleLocationChange(val) {
         let newState = this.state
-        newState['location'] = {}
-        newState['location']['id'] = val.value
-        newState['location']['name'] = val.label
-        newState['location_id'] = val.value
+        newState.location = {};
+        newState.location.id = val.value;
+        newState.location.name = val.label;
+        newState.location_id = val.value;
         this.setState(newState);
     }
 

@@ -1,4 +1,4 @@
-import { ADMIN_FETCH_LOCATIONS } from './types';
+import { ADMIN_FETCH_LOCATIONS, ADMIN_CREATE_LOCATION } from './types';
 
 export const fetchLocations = (token) => dispatch => {
     fetch('/api/v1/admin/locations', {
@@ -11,4 +11,12 @@ export const fetchLocations = (token) => dispatch => {
                 payload: res
             })
         );
+};
+
+export const createLocation = (token, location, callback) => {
+    fetch('/api/v1/admin/locations', {
+        method: "POST",
+        headers: { 'X-Authorization': 'Bearer '+token, 'Content-type': 'application/json' },
+        body: JSON.stringify({location: location})
+    }).then(res => callback(res));
 };
