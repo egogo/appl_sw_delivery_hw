@@ -10,7 +10,7 @@ class AdminEventSignupsEditor extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {email_to_signup: ''}
+        this.state = {email_to_signup: '', errors: {}}
     }
 
     handleChange(event) {
@@ -31,9 +31,15 @@ class AdminEventSignupsEditor extends Component {
             this.props.match.params.eventId,
             this.state.email_to_signup,
             ((json) => {
-                console.log(json)
-                this.setState({email_to_signup: ''})
-                this.props.fetchEventSignups(this.context.api_access_token, this.props.match.params.eventId)
+                if('errors' in json) {
+                    this.setState({
+                        ...this.state,
+                        errors: json.errors
+                    })
+                }else{
+                    this.setState({email_to_signup: '', errors: {}})
+                    this.props.fetchEventSignups(this.context.api_access_token, this.props.match.params.eventId)
+                }
             }),
         )()
         event.preventDefault()
@@ -42,6 +48,31 @@ class AdminEventSignupsEditor extends Component {
     componentDidMount() {
         if (this.props.match.params.eventId) {
             this.props.fetchEventSignups(this.context.api_access_token, this.props.match.params.eventId);
+        }
+    }
+
+    getCssStringForEmail() {
+        const base = "form-control";
+        if('email' in this.state.errors && this.state.errors.email.length > 0) {
+            return base + ' is-invalid';
+        }
+        return base
+    }
+
+    getErrorMessages() {
+        let error_msgs = ""
+        if('email' in this.state.errors && this.state.errors.email.length > 0) {
+            error_msgs = this.state.errors.email.map((msg) => "'Email' "+msg).join(", ")
+        }
+
+        if(error_msgs == "") {
+            return ""
+        }else{
+            return (
+                <div className="invalid-feedback">
+                    {error_msgs}
+                </div>
+            )
         }
     }
 
@@ -67,11 +98,12 @@ class AdminEventSignupsEditor extends Component {
                     </table>
                     <form className="form-inline">
                         <div className="form-group mb-2">
-                            <input type="text" className="form-control"  value={this.state.email_to_signup} onChange={(e)=>this.handleChange(e)} />
+                            <label>Email:</label>
+                            <input type="text" className={this.getCssStringForEmail()}  value={this.state.email_to_signup} onChange={(e)=>this.handleChange(e)} />
+                            {this.getErrorMessages()}
                         </div>
-                        <button type="submit" className="btn btn-primary mb-2" onClick={(e)=>this.signupEmail(e)}>Add Email</button>
                     </form>
-                    or <Link to={``}>Go Back</Link>
+                    <button type="submit" className="btn btn-primary mb-2" onClick={(e)=>this.signupEmail(e)}>Add Email</button> or <Link to={``}>Go Back</Link>
                 </div>
             </div>
         );

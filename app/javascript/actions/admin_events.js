@@ -37,10 +37,12 @@ export const updateEvent = (token, id, event, callback) => {
     })
     .then(
         (res) => {
-            if(res.status != 204) {
-                callback(res.json())
-            }else{
+            if(res.ok) {
                 callback({})
+            }else{
+                res.json().then((json) => {
+                    callback(json)
+                })
             }
         }
     )
@@ -56,11 +58,9 @@ export const createEvent = (token, event, callback) => {
         body: JSON.stringify({event: event})
     }).then(
             (res) => {
-                if(res.status != 204) {
-                    callback(res.json())
-                }else{
-                    callback({})
-                }
+                res.json().then((json) => {
+                    callback(json)
+                })
             }
         )
 };

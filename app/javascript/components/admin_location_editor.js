@@ -17,7 +17,8 @@ class AdminLocatinEditor extends Component {
         super(props);
         this.state = {
             showForm: false,
-            location: defaultLocationState
+            location: defaultLocationState,
+            errors: {}
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,12 +40,47 @@ class AdminLocatinEditor extends Component {
                         this.props.optionCreated(json)
                         this.handleCancel()
                     })
-                }else{
-
+                }else if(resp.status == 422){
+                    resp.json().then((json) => {
+                        this.highlightErrors(json.errors)
+                    })
                 }
             }
         )
         evt.preventDefault()
+    }
+
+    resetErrors() {
+        this.setState({...this.state, errors: {}})
+    }
+
+    highlightErrors(errors) {
+        this.setState({...this.state, errors: errors})
+    }
+
+    getCssStringFor(field) {
+        const base = "form-control form-control-sm";
+        if(field in this.state.errors && this.state.errors[field].length > 0) {
+            return base + ' is-invalid';
+        }
+        return base
+    }
+
+    getErrorMessages(field) {
+        let error_msgs = ""
+        if(field in this.state.errors && this.state.errors[field].length > 0) {
+            error_msgs = this.state.errors[field].map((msg) => "'"+field+"' "+msg).join(", ")
+        }
+
+        if(error_msgs == "") {
+            return ""
+        }else{
+         return (
+             <div className="invalid-feedback">
+                 {error_msgs}
+             </div>
+         )
+        }
     }
 
     handleCancel(evt) {
@@ -74,31 +110,37 @@ class AdminLocatinEditor extends Component {
                             <div className="form-row">
                                 <div className="form-group col-sm-4">
                                     <label>Name</label>
-                                    <input type="text" name="name" className="form-control form-control-sm" value={loc.name} onChange={this.handleChange} />
+                                    <input type="text" name="name" className={this.getCssStringFor('name')} value={loc.name} onChange={this.handleChange} />
+                                    {this.getErrorMessages('name')}
                                 </div>
                                 <div className="form-group col-sm-8">
                                     <label>Address</label>
-                                    <input type="text" name="address" className="form-control form-control-sm" value={loc.address} onChange={this.handleChange} />
+                                    <input type="text" name="address" className={this.getCssStringFor('address')} value={loc.address} onChange={this.handleChange} />
+                                    {this.getErrorMessages('address')}
                                 </div>
                             </div>
                             <div className="form-row">
                                 <div className="form-group col-sm-6">
                                     <label>City</label>
-                                    <input type="text" name="city" className="form-control form-control-sm" value={loc.city} onChange={this.handleChange} />
+                                    <input type="text" name="city" className={this.getCssStringFor('city')} value={loc.city} onChange={this.handleChange} />
+                                    {this.getErrorMessages('city')}
                                 </div>
                                 <div className="form-group col-sm-3">
                                     <label>State</label>
-                                    <input type="text" name="state" className="form-control form-control-sm" value={loc.state} onChange={this.handleChange} />
+                                    <input type="text" name="state" className={this.getCssStringFor('state')} value={loc.state} onChange={this.handleChange} />
+                                    {this.getErrorMessages('state')}
                                 </div>
                                 <div className="form-group col-sm-3">
                                     <label>Postal Code</label>
-                                    <input type="text" name="postal_code" className="form-control form-control-sm" value={loc.postal_code} onChange={this.handleChange} />
+                                    <input type="text" name="postal_code" className={this.getCssStringFor('postal_code')} value={loc.postal_code} onChange={this.handleChange} />
+                                    {this.getErrorMessages('postal_code')}
                                 </div>
                             </div>
                             <div className="form-row">
                                 <div className="form-group col-sm-4">
                                     <label>Country</label>
-                                    <input type="text" name="country" className="form-control form-control-sm" value={loc.country} onChange={this.handleChange} />
+                                    <input type="text" name="country" className={this.getCssStringFor('country')} value={loc.country} onChange={this.handleChange} />
+                                    {this.getErrorMessages('country')}
                                 </div>
                                 <div className="col-sm-8 ">
                                     <br/>
